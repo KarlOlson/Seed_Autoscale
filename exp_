@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#git clone https://github.com/BashayerAlharbi1/seed-emulator-rpki.git ninety 
+#cd ninety
+source development.env
+cd examples/B00-mini-internet/
+python3 mini-internet.py -d 90
+cd output
+docker-compose build --no-cache
+docker-compose up -d
