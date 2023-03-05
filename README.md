@@ -3,7 +3,7 @@ This contains the complete BGPchain and test environment using the Mini-internet
 # To Run an Experiment
 1. from `examples` find your experiment folder and run the chosen python file. Note: you can define a % of the topology to deploy BGPchain on by issuing the following `python3 mini-internet.py -d 50` will deply on 50% of the ASes. At the moment you must have a manual count and statically define the total.
 
-2. After topology deployed, run the `/bgp_smart_contracts/configs/b00-mini-internet/routerupdate.sh` script to reconfigure the topology to be fully routable. eg. `sudo bash routerupdate.sh`
+2. [OLD - NEW Upates fix this. No longer needed] After topology deployed, run the `/bgp_smart_contracts/configs/b00-mini-internet/routerupdate.sh` script to reconfigure the topology to be fully routable. eg. `sudo bash routerupdate.sh`
 
 3. Validate Topology operation and # devices with proxy running (identified by `_proxy` in name).
 
