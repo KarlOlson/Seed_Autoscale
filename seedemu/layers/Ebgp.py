@@ -17,8 +17,13 @@ define PROVIDER_COMM = ({localAsn}, 3, 0);
 EbgpFileTemplates["rs_bird_peer"] =  """
     ipv4 {{
     	table t_bgp;
-        import all;
-        export all;
+        import filter {{
+            bgp_large_community.add(PROVIDER_COMM);
+            bgp_local_pref = 10;
+            accept;
+        }};
+        export where bgp_large_community ~ [LOCAL_COMM, CUSTOMER_COMM];
+        next hop self;
     }};
     local {localAddress} as {localAsn};
     neighbor {peerAddress} as {peerAsn};
