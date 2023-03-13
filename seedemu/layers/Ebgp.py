@@ -19,22 +19,25 @@ EbgpFileTemplates["rs_bird_peer"] =  """
     	table t_bgp;
         import filter {{
             bgp_large_community.add(PROVIDER_COMM);
-            bgp_local_pref = 10;
+            
             accept;
         }};
-        export where bgp_large_community ~ [LOCAL_COMM, CUSTOMER_COMM];
+        export all;
         next hop self;
     }};
+    
     local {localAddress} as {localAsn};
     neighbor {peerAddress} as {peerAsn};
 """
-#removed rsclient; line 22
+#bgp_local_pref = 10; line 22
+#removed rsclient; line 28
+#export where bgp_large_community ~ [LOCAL_COMM, CUSTOMER_COMM];
 EbgpFileTemplates["rnode_bird_peer"] = """
     ipv4 {{
         table t_bgp;
         import filter {{
             bgp_large_community.add({importCommunity});
-            bgp_local_pref = {bgpPref};
+            
             accept;
         }};
         export {exportFilter};
@@ -43,7 +46,7 @@ EbgpFileTemplates["rnode_bird_peer"] = """
     local {localAddress} as {localAsn};
     neighbor {peerAddress} as {peerAsn};
 """
-
+#removed bgp_local_pref = {bgpPref}; line 37
 class PeerRelationship(Enum):
     """!
     @brief Relationship between peers.
@@ -132,7 +135,8 @@ class Ebgp(Layer, Graphable):
                 #exportFilter = "where bgp_large_community ~ [LOCAL_COMM, CUSTOMER_COMM]",
                 exportFilter = "all",
                 importCommunity = "PEER_COMM",
-                bgpPref = 20
+                #importFilter= "all",
+                bgpPref = 25
             ))
 
             return
@@ -146,7 +150,7 @@ class Ebgp(Layer, Graphable):
                 #exportFilter = "where bgp_large_community ~ [LOCAL_COMM, CUSTOMER_COMM]",
                 exportFilter = "all",
                 importCommunity = "PEER_COMM",
-                bgpPref = 20
+                bgpPref = 30
             ))
 
             routerB.addProtocol('bgp', 'p_as{}'.format(routerA.getAsn()), EbgpFileTemplates["rnode_bird_peer"].format(
@@ -157,7 +161,7 @@ class Ebgp(Layer, Graphable):
                 #exportFilter = "where bgp_large_community ~ [LOCAL_COMM, CUSTOMER_COMM]",
                 exportFilter = "all",
                 importCommunity = "PEER_COMM",
-                bgpPref = 20
+                bgpPref = 30
             ))
 
         if rel == PeerRelationship.Provider:
@@ -168,7 +172,7 @@ class Ebgp(Layer, Graphable):
                 peerAsn = routerB.getAsn(),
                 exportFilter = "all",
                 importCommunity = "CUSTOMER_COMM",
-                bgpPref = 30
+                bgpPref = 20
             ))
 
             routerB.addProtocol('bgp', 'u_as{}'.format(routerA.getAsn()), EbgpFileTemplates["rnode_bird_peer"].format(
@@ -176,6 +180,7 @@ class Ebgp(Layer, Graphable):
                 localAsn = routerB.getAsn(),
                 peerAddress = addrA,
                 peerAsn = routerA.getAsn(),
+                #exportFilter = "where bgp_large_community ~ [LOCAL_COMM, CUSTOMER_COMM]",
                 #exportFilter = "where bgp_large_community ~ [LOCAL_COMM, CUSTOMER_COMM]",
                 exportFilter = "all",
                 importCommunity = "PROVIDER_COMM",
