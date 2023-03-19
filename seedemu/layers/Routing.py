@@ -40,7 +40,7 @@ protocol pipe {{
     table t_direct;
     peer table t_bgp;
     import none;
-    export filter {{ bgp_large_community.add(LOCAL_COMM); bgp_local_pref = 40; accept; }};
+    export filter {{ bgp_large_community.add(LOCAL_COMM); accept; }};
 }}
 """
 
